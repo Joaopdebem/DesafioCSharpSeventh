@@ -8,7 +8,8 @@ namespace DesafioCSharpSeventh.Services
         Task<IEnumerable<Server>> GetServersAsync();
         Task<Server> GetServerByIdAsync(Guid id);
         Task AddServerAsync(AddServerRequest request);
-        //Task UpdateServerAsync(Guid id, UpdateServerRequest request);
-        //Task DeleteServerAsync(Guid id);
+        Task UpdateServerAsync(Guid id, UpdateServerRequest request);
+        Task DeleteServerAsync(Guid id);
+        Task<bool> IsServerAvailableAsync(Guid id);
     }
 }

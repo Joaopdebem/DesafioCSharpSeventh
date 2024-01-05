@@ -30,7 +30,7 @@ namespace DesafioCSharpSeventh.Services
             return await _context.Servers.FindAsync(id);
         }
 
-        /*public async Task UpdateServerAsync(Guid id, UpdateServerRequest request)
+        public async Task UpdateServerAsync(Guid id, UpdateServerRequest request)
         {
             var existingServer = await _context.Servers.FindAsync(id);
 
@@ -42,9 +42,9 @@ namespace DesafioCSharpSeventh.Services
 
                 await _context.SaveChangesAsync();
             }
-        } */
+        }
 
-        /*public async Task DeleteServerAsync(Guid id)
+        public async Task DeleteServerAsync(Guid id)
         {
             var serverToDelete = await _context.Servers.FindAsync(id);
 
@@ -53,6 +53,36 @@ namespace DesafioCSharpSeventh.Services
                 _context.Servers.Remove(serverToDelete);
                 await _context.SaveChangesAsync();
             }
-        }*/
+        }
+        public async Task<bool> IsServerAvailableAsync(Guid id)
+        {
+            var server = await _context.Servers.FindAsync(id);
+
+            if (server == null)
+            {
+                Console.WriteLine($"Server with ID {id} not found.");
+                return false;
+            }
+
+            bool isServerReachable = await CheckServerReachability(server.IPAdress, server.IPPort);
+
+            return isServerReachable;
+        }
+
+        private async Task<bool> CheckServerReachability(string ipAddress, int port)
+        {
+            try
+            {
+                using (var client = new System.Net.Sockets.TcpClient())
+                {
+                    await client.ConnectAsync(ipAddress, port);
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

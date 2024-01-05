@@ -33,10 +33,59 @@ public class ServerController : ControllerBase
         return Ok(server);
     }
 
+    [HttpGet("servers/available/{id}")]
+    public async Task<IActionResult> IsServerAvailable(Guid id)
+    {
+        bool isAvailable = await _serverService.IsServerAvailableAsync(id);
+
+        if (isAvailable)
+        {
+            return Ok("Server is available.");
+        }
+        else
+        {
+            return NotFound("Server is not available.");
+        }
+    }
+
     [HttpPost("server")]
     public async Task<IActionResult> AddServer([FromBody] AddServerRequest request)
     {
         await _serverService.AddServerAsync(request);
+        return Ok();
+    }
+
+    [HttpPut("servers/{id}")]
+    public async Task<IActionResult> UpdateServer(Guid id, [FromBody] UpdateServerRequest request)
+    {
+        var existingServer = await _serverService.GetServerByIdAsync(id);
+
+        if (existingServer == null)
+        {
+            return NotFound();
+        }
+
+        existingServer.Name = request.Name;
+        existingServer.IPAdress = request.IPAdress;
+        existingServer.IPPort = request.IPPort;
+
+        await _serverService.UpdateServerAsync(id, request);
+
+        return Ok();
+    }
+
+    [HttpDelete("servers/{id}")]
+    public async Task<IActionResult> DeleteServer(Guid id)
+    {
+        var serverToDelete = await _serverService.GetServerByIdAsync(id);
+
+        if (serverToDelete == null)
+        {
+            return NotFound();
+        }
+
+        await _serverService.DeleteServerAsync(id);
+
         return Ok();
     }
 
