@@ -33,6 +33,19 @@ public class ServerController : ControllerBase
         return Ok(server);
     }
 
+    [HttpGet("servers/{IPAddress}:{IPPort}")]
+    public async Task<IActionResult> GetServerByIP(string IPAddress, int IPPort)
+    {
+        var server = await _serverService.GetServerByIPAsync(IPAddress, IPPort);
+
+        if (server == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(server);
+    }
+
     [HttpGet("servers/available/{id}")]
     public async Task<IActionResult> IsServerAvailable(Guid id)
     {
@@ -66,7 +79,7 @@ public class ServerController : ControllerBase
         }
 
         existingServer.Name = request.Name;
-        existingServer.IPAdress = request.IPAdress;
+        existingServer.IPAddress = request.IPAddress;
         existingServer.IPPort = request.IPPort;
 
         await _serverService.UpdateServerAsync(id, request);

@@ -1,4 +1,4 @@
 ﻿namespace DesafioCSharpSeventh.Utilities
 {
-    public record UpdateServerRequest(string Name, string IPAdress, int IPPort);
+    public record UpdateServerRequest(string Name, string IPAddress, int IPPort);
 }

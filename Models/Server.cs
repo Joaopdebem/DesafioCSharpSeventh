@@ -4,7 +4,7 @@
     {
         public Guid Id { get; init; }
         public string Name { get; set; }
-        public string IPAdress { get; set; }
+        public string IPAddress { get; set; }
         public int IPPort { get; set; }
 
         public Server()
@@ -12,10 +12,10 @@
             Id = Guid.NewGuid();
         }
 
-        public Server(string name, string ipadress, int ipport)
+        public Server(string name, string ipaddress, int ipport)
         {
             Name = name;
-            IPAdress = ipadress;
+            IPAddress = ipaddress;
             IPPort = ipport;
         }
     }

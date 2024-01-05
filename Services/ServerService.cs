@@ -2,6 +2,7 @@
 using DesafioCSharpSeventh.Models;
 using DesafioCSharpSeventh.Utilities;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace DesafioCSharpSeventh.Services
 {
@@ -15,7 +16,7 @@ namespace DesafioCSharpSeventh.Services
         }
         public async Task AddServerAsync(AddServerRequest request)
         {
-            var newServer = new Server(request.Name, request.IPAdress, request.IPPort);
+            var newServer = new Server(request.Name, request.IPAddress, request.IPPort);
             await _context.Servers.AddAsync(newServer);
             await _context.SaveChangesAsync();
         }
@@ -29,7 +30,10 @@ namespace DesafioCSharpSeventh.Services
         {
             return await _context.Servers.FindAsync(id);
         }
-
+        public async Task<Server> GetServerByIPAsync(string IPAddress, int IPPort)
+        {
+            return await _context.Servers.FirstOrDefaultAsync(s => s.IPAddress == IPAddress && s.IPPort == IPPort);
+        }
         public async Task UpdateServerAsync(Guid id, UpdateServerRequest request)
         {
             var existingServer = await _context.Servers.FindAsync(id);
@@ -37,7 +41,7 @@ namespace DesafioCSharpSeventh.Services
             if (existingServer != null)
             {
                 existingServer.Name = request.Name;
-                existingServer.IPAdress = request.IPAdress;
+                existingServer.IPAddress = request.IPAddress;
                 existingServer.IPPort = request.IPPort;
 
                 await _context.SaveChangesAsync();
@@ -64,7 +68,7 @@ namespace DesafioCSharpSeventh.Services
                 return false;
             }
 
-            bool isServerReachable = await CheckServerReachability(server.IPAdress, server.IPPort);
+            bool isServerReachable = await CheckServerReachability(server.IPAddress, server.IPPort);
 
             return isServerReachable;
         }
