@@ -1,8 +1,5 @@
 using DesafioCSharpSeventh.Data;
 using DesafioCSharpSeventh.Services;
-using DesafioCSharpSeventh.Utilities;
-using Microsoft.Extensions.DependencyInjection;
-
 
 namespace DesafioCSharpSeventh;
 
@@ -16,6 +13,7 @@ public class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<AppDbContext>();
         builder.Services.AddScoped<IServerService, ServerService>();
+        builder.Services.AddScoped<IVideoService, VideoService>();
         builder.Services.AddControllers();
 
         var app = builder.Build();

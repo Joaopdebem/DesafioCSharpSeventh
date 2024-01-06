@@ -2,6 +2,8 @@
 using DesafioCSharpSeventh.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
+namespace DesafioCSharpSeventh.Controllers;
+
 [ApiController]
 [Route("api")]
 public class ServerController : ControllerBase
