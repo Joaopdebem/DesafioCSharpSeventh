@@ -38,6 +38,44 @@ namespace DesafioCSharpSeventh.Migrations
 
                     b.ToTable("Servers");
                 });
+
+            modelBuilder.Entity("DesafioCSharpSeventh.Models.Video", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("BinaryContent")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServerId");
+
+                    b.ToTable("Videos");
+                });
+
+            modelBuilder.Entity("DesafioCSharpSeventh.Models.Video", b =>
+                {
+                    b.HasOne("DesafioCSharpSeventh.Models.Server", null)
+                        .WithMany("Videos")
+                        .HasForeignKey("ServerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DesafioCSharpSeventh.Models.Server", b =>
+                {
+                    b.Navigation("Videos");
+                });
 #pragma warning restore 612, 618
         }
     }

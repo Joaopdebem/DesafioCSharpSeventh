@@ -1,5 +1,6 @@
 ﻿using DesafioCSharpSeventh.Models;
 using DesafioCSharpSeventh.Services;
+using DesafioCSharpSeventh.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DesafioCSharpSeventh.Controllers;
@@ -22,17 +23,10 @@ public class VideoController : Controller
         return Ok(videos);
     }
 
-    [HttpPost("servers/{serverId}/videos")]
-    public async Task<IActionResult> AddVideo(Guid serverId, [FromBody] Video video)
+    [HttpGet("servers/{serverId}/videos/{videoId}")]
+    public async Task<IActionResult> GetVideoById(Guid serverId, Guid videoId)
     {
-        await _videoService.AddVideoAsync(serverId, video);
-        return Ok();
-    }
-
-    [HttpGet("videos/{videoId}")]
-    public async Task<IActionResult> GetVideoById(Guid videoId)
-    {
-        var video = await _videoService.GetVideoByIdAsync(videoId);
+        var video = await _videoService.GetVideoByIdAsync(serverId, videoId);
 
         if (video == null)
         {
@@ -42,17 +36,24 @@ public class VideoController : Controller
         return Ok(video);
     }
 
-    [HttpDelete("videos/{videoId}")]
-    public async Task<IActionResult> DeleteVideo(Guid videoId)
+    [HttpPost("servers/{serverId}/videos")]
+    public async Task<IActionResult> AddVideo(Guid serverId, [FromBody] AddVideoRequest request)
     {
-        var videoToDelete = await _videoService.GetVideoByIdAsync(videoId);
+        await _videoService.AddVideoAsync(serverId, request);
+        return Ok();
+    }
+
+    [HttpDelete("servers/{serverId}/videos/{videoId}")]
+    public async Task<IActionResult> DeleteVideo(Guid serverId, Guid videoId)
+    {
+        var videoToDelete = await _videoService.GetVideoByIdAsync(serverId, videoId);
 
         if (videoToDelete == null)
         {
             return NotFound();
         }
 
-        await _videoService.DeleteVideoAsync(videoId);
+        await _videoService.DeleteVideoAsync(serverId, videoId);
 
         return Ok();
     }

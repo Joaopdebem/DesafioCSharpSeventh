@@ -1,5 +1,6 @@
 ﻿using DesafioCSharpSeventh.Data;
 using DesafioCSharpSeventh.Models;
+using DesafioCSharpSeventh.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DesafioCSharpSeventh.Services;
@@ -12,22 +13,22 @@ public class VideoService : IVideoService
     {
         _context = context;
     }
-    public async Task<IEnumerable<Video>> GetVideosAsync(Guid serverId)
-    {
-        var server = await _context.Servers.Include(s => s.Videos).FirstOrDefaultAsync(s => s.Id == serverId);
-
-        return server?.Videos ?? Enumerable.Empty<Video>();
-    }
-
-    public async Task AddVideoAsync(Guid serverId, Video video)
+    public async Task AddVideoAsync(Guid serverId, AddVideoRequest request)
     {
         var server = await _context.Servers.FindAsync(serverId);
 
         if (server != null)
         {
-            server.Videos.Add(video);
+            var newVideo = new Video(request.Description, request.BinaryContent, request.ServerId);
+            server.Videos.Add(newVideo);
             await _context.SaveChangesAsync();
         }
+    }
+    public async Task<IEnumerable<Video>> GetVideosAsync(Guid serverId)
+    {
+        var server = await _context.Servers.Include(s => s.Videos).FirstOrDefaultAsync(s => s.Id == serverId);
+
+        return server?.Videos ?? Enumerable.Empty<Video>();
     }
 
     public async Task<Video> GetVideoByIdAsync(Guid videoId)
@@ -44,5 +45,20 @@ public class VideoService : IVideoService
             _context.Videos.Remove(videoToDelete);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public Task AddVideoAsync(Guid serverId, Video video)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Video> GetVideoByIdAsync(Guid serverId, Guid videoId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteVideoAsync(Guid serverId, Guid videoId)
+    {
+        throw new NotImplementedException();
     }
 }
