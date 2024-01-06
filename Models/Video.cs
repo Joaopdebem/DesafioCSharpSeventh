@@ -11,10 +11,10 @@ public class Video
     {
         
     }
-    public Video(string description, byte[] binaryContent, Guid serverId)
+    public Video(string description, string binaryContent, Guid serverId)
     {
         Description = description;
-        BinaryContent =binaryContent;
+        BinaryContent = Convert.FromBase64String(binaryContent);
         ServerId = serverId;
     }
 
