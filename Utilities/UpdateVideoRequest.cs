@@ -1,6 +1,5 @@
 ﻿namespace DesafioCSharpSeventh.Utilities
 {
-    public class UpdateVideoRequest
-    {
-    }
+    public record UpdateVideoRequest(string Description);
+
 }

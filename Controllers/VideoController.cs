@@ -2,6 +2,7 @@
 using DesafioCSharpSeventh.Services;
 using DesafioCSharpSeventh.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace DesafioCSharpSeventh.Controllers;
 
@@ -16,34 +17,18 @@ public class VideoController : Controller
         _videoService = videoService;
     }
 
-    [HttpGet("servers/{serverId}/videos")]
-    public async Task<IActionResult> GetVideos(Guid serverId)
-    {
-        var videos = await _videoService.GetVideosAsync(serverId);
-        return Ok(videos);
-    }
-
-    [HttpGet("servers/{serverId}/videos/{videoId}")]
-    public async Task<IActionResult> GetVideoById(Guid serverId, Guid videoId)
-    {
-        var video = await _videoService.GetVideoByIdAsync(serverId, videoId);
-
-        if (video == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(video);
-    }
 
     [HttpPost("servers/{serverId}/videos")]
+    [SwaggerOperation(Summary = "Adicionar um vídeo a um servidor", Description = "Endpoint para adicionar um vídeo a um servidor")]
     public async Task<IActionResult> AddVideo(Guid serverId, [FromBody] AddVideoRequest request)
     {
         await _videoService.AddVideoAsync(serverId, request);
         return Ok();
     }
 
+
     [HttpDelete("servers/{serverId}/videos/{videoId}")]
+    [SwaggerOperation(Summary = "Excluir um vídeo de um servidor", Description = "Endpoint para remover um video de um servidor")]
     public async Task<IActionResult> DeleteVideo(Guid serverId, Guid videoId)
     {
         var videoToDelete = await _videoService.GetVideoByIdAsync(serverId, videoId);
@@ -57,4 +42,48 @@ public class VideoController : Controller
 
         return Ok();
     }
+
+
+    [HttpGet("servers/{serverId}/videos/{videoId}")]
+    [SwaggerOperation(Summary = "Recuperar dados de um vídeo", Description = "Endpoint para recuperar dados cadastrais de um video em um servidor")]
+    public async Task<IActionResult> GetVideoById(Guid serverId, Guid videoId)
+    {
+        var video = await _videoService.GetVideoByIdAsync(serverId, videoId);
+
+        if (video == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(video);
+    }
+    
+
+    [HttpGet("servers/{serverId}/videos")]
+    [SwaggerOperation(Summary = "Listar todos vídeos de um servidor", Description = "Endpoint para listar todos os videos de um servidor")]
+    public async Task<IActionResult> GetVideos(Guid serverId)
+    {
+        var videos = await _videoService.GetVideosAsync(serverId);
+        return Ok(videos);
+    }
+
+    
+    [HttpPatch("servers/{serverId}/videos/{videoId}")]
+    [SwaggerOperation(Summary = "Atualizar descrição de um vídeo", Description = "Endpoint para atualizar a descrição de um vídeo")]
+    public async Task<IActionResult> UpdateVideo(Guid serverId, Guid videoId, [FromBody] UpdateVideoRequest request)
+    {
+        var existingVideo = await _videoService.GetVideoByIdAsync(serverId, videoId);
+
+        if (existingVideo == null)
+        {
+            return NotFound();
+        }
+
+        existingVideo.Description = request.Description;
+        await _videoService.UpdateVideoAsync(videoId, request);
+
+        return Ok();
+    }
+
+
 }

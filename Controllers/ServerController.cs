@@ -1,6 +1,8 @@
 ﻿using DesafioCSharpSeventh.Services;
 using DesafioCSharpSeventh.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+
 
 namespace DesafioCSharpSeventh.Controllers;
 
@@ -15,14 +17,18 @@ public class ServerController : ControllerBase
         _serverService = serverService;
     }
 
+
     [HttpGet("servers")]
+    [SwaggerOperation(Summary = "Listar todos servidores", Description = "Endpoint para listar todos servidores.")]
     public async Task<IActionResult> GetServers()
     {
         var servers = await _serverService.GetServersAsync();
         return Ok(servers);
     }
 
+
     [HttpGet("servers/{id}")]
+    [SwaggerOperation(Summary = "Recuperar servidor", Description = "Endpoint para recuperar servidor por Id.")]
     public async Task<IActionResult> GetServerById(Guid id)
     {
         var server = await _serverService.GetServerByIdAsync(id);
@@ -34,43 +40,19 @@ public class ServerController : ControllerBase
 
         return Ok(server);
     }
-
-    [HttpGet("servers/{IPAddress}:{IPPort}")]
-    public async Task<IActionResult> GetServerByIP(string IPAddress, int IPPort)
-    {
-        var server = await _serverService.GetServerByIPAsync(IPAddress, IPPort);
-
-        if (server == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(server);
-    }
-
-    [HttpGet("servers/available/{id}")]
-    public async Task<IActionResult> IsServerAvailable(Guid id)
-    {
-        bool isAvailable = await _serverService.IsServerAvailableAsync(id);
-
-        if (isAvailable)
-        {
-            return Ok("Server is available.");
-        }
-        else
-        {
-            return NotFound("Server is not available.");
-        }
-    }
-
+    
+    
     [HttpPost("server")]
+    [SwaggerOperation(Summary = "Criar um novo servidor", Description = "Endpoint para criar um novo servidor.")]
     public async Task<IActionResult> AddServer([FromBody] AddServerRequest request)
     {
         await _serverService.AddServerAsync(request);
         return Ok();
     }
 
-    [HttpPut("servers/{id}")]
+
+    [HttpPatch("servers/{id}")]
+    [SwaggerOperation(Summary = "Atualizar um servidor", Description = "Endpoint para modificar um servidor")]
     public async Task<IActionResult> UpdateServer(Guid id, [FromBody] UpdateServerRequest request)
     {
         var existingServer = await _serverService.GetServerByIdAsync(id);
@@ -89,7 +71,9 @@ public class ServerController : ControllerBase
         return Ok();
     }
 
+
     [HttpDelete("servers/{id}")]
+    [SwaggerOperation(Summary = "Excluir servidor", Description = "Endpoint para excluir um servidor")]
     public async Task<IActionResult> DeleteServer(Guid id)
     {
         var serverToDelete = await _serverService.GetServerByIdAsync(id);
@@ -102,6 +86,23 @@ public class ServerController : ControllerBase
         await _serverService.DeleteServerAsync(id);
 
         return Ok();
+    }
+
+
+    [HttpGet("servers/available/{id}")]
+    [SwaggerOperation(Summary = "Verificar disponibilidade de um servidor", Description = "Endpoint para checar disponibilidade.")]
+    public async Task<IActionResult> IsServerAvailable(Guid id)
+    {
+        bool isAvailable = await _serverService.AvailableAsync(id.ToString());
+
+        if (isAvailable)
+        {
+            return Ok("Servidor está disponível");
+        }
+        else
+        {
+            return NotFound("Servidor não está disponível");
+        }
     }
 
 }

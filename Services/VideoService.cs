@@ -13,6 +13,8 @@ public class VideoService : IVideoService
     {
         _context = context;
     }
+    
+    
     public async Task AddVideoAsync(Guid serverId, AddVideoRequest request)
     {
         var server = await _context.Servers.FindAsync(serverId);
@@ -24,6 +26,8 @@ public class VideoService : IVideoService
             await _context.SaveChangesAsync();
         }
     }
+    
+    
     public async Task<IEnumerable<Video>> GetVideosAsync(Guid serverId)
     {
         var server = await _context.Servers.Include(s => s.Videos).FirstOrDefaultAsync(s => s.Id == serverId);
@@ -31,12 +35,26 @@ public class VideoService : IVideoService
         return server?.Videos ?? Enumerable.Empty<Video>();
     }
 
-    public async Task<Video> GetVideoByIdAsync(Guid videoId)
+    
+    public async Task<Video> GetVideoByIdAsync(Guid serverId, Guid videoId)
     {
         return await _context.Videos.FindAsync(videoId);
     }
 
-    public async Task DeleteVideoAsync(Guid videoId)
+
+    public async Task UpdateVideoAsync(Guid videoId, UpdateVideoRequest request)
+    {
+        var existingVideo = await _context.Videos.FindAsync(videoId);
+
+        if (existingVideo != null)
+        {
+            existingVideo.Description = request.Description;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+
+    public async Task DeleteVideoAsync(Guid serverId, Guid videoId)
     {
         var videoToDelete = await _context.Videos.FindAsync(videoId);
 
@@ -47,18 +65,4 @@ public class VideoService : IVideoService
         }
     }
 
-    public Task AddVideoAsync(Guid serverId, Video video)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Video> GetVideoByIdAsync(Guid serverId, Guid videoId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteVideoAsync(Guid serverId, Guid videoId)
-    {
-        throw new NotImplementedException();
-    }
 }

@@ -127,3 +127,4 @@ C:\Dev\DesafioSeventh\DesafioCSharpSeventh\obj\Debug\net8.0\refint\DesafioCSharp
 C:\Dev\DesafioSeventh\DesafioCSharpSeventh\obj\Debug\net8.0\DesafioCSharpSeventh.pdb
 C:\Dev\DesafioSeventh\DesafioCSharpSeventh\obj\Debug\net8.0\DesafioCSharpSeventh.genruntimeconfig.cache
 C:\Dev\DesafioSeventh\DesafioCSharpSeventh\obj\Debug\net8.0\ref\DesafioCSharpSeventh.dll
+C:\Dev\DesafioSeventh\DesafioCSharpSeventh\bin\Debug\net8.0\Swashbuckle.AspNetCore.Annotations.dll
