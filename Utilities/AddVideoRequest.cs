@@ -1,4 +1,6 @@
-﻿namespace DesafioCSharpSeventh.Utilities
+﻿using System.Buffers.Text;
+
+namespace DesafioCSharpSeventh.Utilities
 {
-    public record AddVideoRequest(string Description, long BinaryContent, Guid ServerId);
+    public record AddVideoRequest(string Description);
 }

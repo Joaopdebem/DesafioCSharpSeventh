@@ -1,5 +1,6 @@
 using DesafioCSharpSeventh.Data;
 using DesafioCSharpSeventh.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 namespace DesafioCSharpSeventh;
@@ -14,6 +15,7 @@ public class Program
         builder.Services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Desafio Seventh C#", Version = "v1" });
+            c.EnableAnnotations();
         });
         builder.Services.AddScoped<AppDbContext>();
         builder.Services.AddScoped<IServerService, ServerService>();

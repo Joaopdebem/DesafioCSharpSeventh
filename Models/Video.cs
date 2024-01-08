@@ -1,21 +1,30 @@
-﻿namespace DesafioCSharpSeventh.Models;
+﻿using DesafioCSharpSeventh.Models.BaseModels;
+using System.ComponentModel.DataAnnotations;
 
-public class Video
+namespace DesafioCSharpSeventh.Models;
+
+public class Video : Base
 {
+    public const string requiredMessage = "Campo obrigatório";
+
     public Guid Id { get; set; }
+
+    [Required(ErrorMessage = requiredMessage)]
+    [ConcurrencyCheck]
     public string Description { get; set; }
-    public long BinaryContent  { get; set; }
+
+
+    [Required(ErrorMessage = requiredMessage)]
+    public long SizeInBytes  { get; private set; }
+
+
+    [Required(ErrorMessage = requiredMessage)]
     public Guid ServerId { get; set; }
 
-    public Video()
-    {
-        Id = Guid.NewGuid();
-    }
-    public Video(string description, long binaryContent, Guid serverId)
+    public Video(string description)
     {
         Description = description;
-        BinaryContent = binaryContent;
-        ServerId = serverId;
+        CreateDate = DateTime.UtcNow;
     }
 
 }

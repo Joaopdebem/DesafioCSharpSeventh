@@ -1,6 +1,8 @@
-﻿using DesafioCSharpSeventh.Services;
+﻿using DesafioCSharpSeventh.Models;
+using DesafioCSharpSeventh.Services;
 using DesafioCSharpSeventh.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
 
@@ -23,7 +25,15 @@ public class ServerController : ControllerBase
     public async Task<IActionResult> GetServers()
     {
         var servers = await _serverService.GetServersAsync();
-        return Ok(servers);
+        var serverProjections = servers.Select(s => new
+        {
+            Id = s.Id,
+            Name = s.Name,
+            Ip = s.Ip,
+            Port = s.Port
+        }).ToList();
+
+        return Ok(serverProjections);
     }
 
 
@@ -38,16 +48,28 @@ public class ServerController : ControllerBase
             return NotFound();
         }
 
-        return Ok(server);
+        var serverProjection = new
+        {
+            Id = server.Id,
+            Name = server.Name,
+            Ip = server.Ip,
+            Port = server.Port
+        };
+
+        return Ok(serverProjection);
     }
-    
-    
+
+
     [HttpPost("server")]
     [SwaggerOperation(Summary = "Criar um novo servidor", Description = "Endpoint para criar um novo servidor.")]
     public async Task<IActionResult> AddServer([FromBody] AddServerRequest request)
     {
-        await _serverService.AddServerAsync(request);
-        return Ok();
+        var serverId = await _serverService.AddServerAsync(request);
+
+        return StatusCode(201, new
+        {
+            Message = "Servidor criado com sucesso"
+        });
     }
 
 
@@ -63,8 +85,8 @@ public class ServerController : ControllerBase
         }
 
         existingServer.Name = request.Name;
-        existingServer.IPAddress = request.IPAddress;
-        existingServer.IPPort = request.IPPort;
+        existingServer.Ip = request.Ip;
+        existingServer.Port = request.Port;
 
         await _serverService.UpdateServerAsync(id, request);
 
@@ -80,12 +102,16 @@ public class ServerController : ControllerBase
 
         if (serverToDelete == null)
         {
-            return NotFound();
+            return NotFound(new
+            {
+                Message = "Servidor não encontrado"
+            });
         }
 
         await _serverService.DeleteServerAsync(id);
 
-        return Ok();
+        return NoContent();
+        ;
     }
 
 
@@ -97,11 +123,11 @@ public class ServerController : ControllerBase
 
         if (isAvailable)
         {
-            return Ok("Servidor está disponível");
+            return Ok("Servidor disponível");
         }
         else
         {
-            return NotFound("Servidor não está disponível");
+            return NotFound("Servidor indisponível");
         }
     }
 

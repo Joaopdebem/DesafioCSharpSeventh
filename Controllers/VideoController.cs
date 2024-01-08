@@ -22,8 +22,12 @@ public class VideoController : Controller
     [SwaggerOperation(Summary = "Adicionar um vídeo a um servidor", Description = "Endpoint para adicionar um vídeo a um servidor")]
     public async Task<IActionResult> AddVideo(Guid serverId, [FromBody] AddVideoRequest request)
     {
+        Console.WriteLine("Chegou ate aqui");
         await _videoService.AddVideoAsync(serverId, request);
-        return Ok();
+        return StatusCode(201, new
+        {
+            Message = "Video adicionado com sucesso"
+        });
     }
 
 
@@ -35,12 +39,15 @@ public class VideoController : Controller
 
         if (videoToDelete == null)
         {
-            return NotFound();
+            return NotFound(new
+            {
+                Message = "Video não encontrado"
+            });
         }
 
         await _videoService.DeleteVideoAsync(serverId, videoId);
 
-        return Ok();
+        return NoContent();
     }
 
 
@@ -52,7 +59,10 @@ public class VideoController : Controller
 
         if (video == null)
         {
-            return NotFound();
+            return NotFound(new
+            {
+                Message = "Video não encontrado"
+            });
         }
 
         return Ok(video);
@@ -64,6 +74,15 @@ public class VideoController : Controller
     public async Task<IActionResult> GetVideos(Guid serverId)
     {
         var videos = await _videoService.GetVideosAsync(serverId);
+
+        if (videos == null)
+        {
+            return NotFound(new
+            {
+                Message = "Videos não encontrados"
+            });
+        }
+
         return Ok(videos);
     }
 
@@ -76,7 +95,10 @@ public class VideoController : Controller
 
         if (existingVideo == null)
         {
-            return NotFound();
+            return NotFound(new
+            {
+                Message = "Video não encontrado"
+            });
         }
 
         existingVideo.Description = request.Description;
