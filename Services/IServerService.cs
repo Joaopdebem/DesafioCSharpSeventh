@@ -11,5 +11,5 @@ public interface IServerService
     Task UpdateServerAsync(Guid id, UpdateServerRequest request);
     Task<bool> DeleteServerAsync(Guid id);
     Task<bool> AvailableAsync(string serverId);
-    
+
 }

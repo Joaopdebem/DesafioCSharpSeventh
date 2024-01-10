@@ -1,11 +1,9 @@
-﻿using DesafioCSharpSeventh.Data;
-using DesafioCSharpSeventh.Models;
+﻿using DesafioCSharpSeventh.Models;
+using Microsoft.EntityFrameworkCore;
+using DesafioCSharpSeventh.Data;
 using DesafioCSharpSeventh.Models.Projections;
 using DesafioCSharpSeventh.Services.Files;
 using DesafioCSharpSeventh.Utilities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DesafioCSharpSeventh.Services;
 

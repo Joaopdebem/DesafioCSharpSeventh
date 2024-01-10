@@ -18,7 +18,7 @@ public class AppDbContext : DbContext
     {
         optionsBuilder
             .UseLoggerFactory(MyLoggerFactory)
-            .UseSqlite(connectionString:"Data Source=Bd.ServerManager");
+            .UseSqlite(connectionString: "Data Source=Bd.ServerManager");
         base.OnConfiguring(optionsBuilder);
     }
 

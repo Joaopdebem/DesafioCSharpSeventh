@@ -105,7 +105,7 @@ public class VideoController : Controller
         return Ok(videos);
     }
 
-    
+
     [HttpPatch("servers/{serverId}/videos/{videoId}")]
     [SwaggerOperation(Summary = "Atualizar descrição de um vídeo", Description = "Endpoint para atualizar a descrição de um vídeo")]
     public async Task<IActionResult> UpdateVideo(Guid serverId, Guid videoId, [FromBody] UpdateVideoRequest request)

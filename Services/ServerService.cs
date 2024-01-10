@@ -1,21 +1,24 @@
-﻿using DesafioCSharpSeventh.Data;
-using DesafioCSharpSeventh.Models;
-using DesafioCSharpSeventh.Utilities;
+﻿using DesafioCSharpSeventh.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Sockets;
 using System.Net;
+using DesafioCSharpSeventh.Data;
 using DesafioCSharpSeventh.Models.Projections;
+using DesafioCSharpSeventh.Utilities;
+using DesafioCSharpSeventh.Services.Files;
 
 namespace DesafioCSharpSeventh.Services;
 
 public class ServerService : IServerService
 {
     private readonly AppDbContext _context;
+    private readonly IFileService _fileService;
 
 
-    public ServerService(AppDbContext context)
+    public ServerService(AppDbContext context, IFileService fileService)
     {
         _context = context;
+        _fileService = fileService;
     }
 
 
@@ -76,21 +79,28 @@ public class ServerService : IServerService
         }
     }
 
-
     public async Task<bool> DeleteServerAsync(Guid id)
     {
-        var serverToDelete = await _context.Servers.FindAsync(id);
+        var serverToDelete = await _context.Servers
+            .Include(s => s.Videos)
+            .FirstOrDefaultAsync(s => s.Id == id);
 
         if (serverToDelete != null)
         {
+            foreach (var video in serverToDelete.Videos)
+            {
+                var fileName = $"{video.MediaFileId}.bin";
+                _fileService.RemoveFile(fileName);
+            }
+
             _context.Servers.Remove(serverToDelete);
             await _context.SaveChangesAsync();
+
             return true;
         }
 
         return false;
     }
-
 
     public async Task<bool> AvailableAsync(string serverId)
     {

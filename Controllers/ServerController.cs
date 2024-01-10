@@ -25,10 +25,10 @@ public class ServerController : ControllerBase
         var servers = await _serverService.GetServersAsync();
         var serverProjections = servers.Select(s => new
         {
-            Id = s.Id,
-            Name = s.Name,
-            Ip = s.Ip,
-            Port = s.Port
+            s.Id,
+            s.Name,
+            s.Ip,
+            s.Port
         }).ToList();
 
         return Ok(serverProjections);
@@ -48,10 +48,10 @@ public class ServerController : ControllerBase
 
         var serverProjection = new
         {
-            Id = server.Id,
-            Name = server.Name,
-            Ip = server.Ip,
-            Port = server.Port
+            server.Id,
+            server.Name,
+            server.Ip,
+            server.Port
         };
 
         return Ok(serverProjection);

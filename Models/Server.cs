@@ -14,9 +14,9 @@ public class Server : Base
 
     public Server(string name, string ip, int port)
     {
-        this.Name = name;
-        this.Ip = ip;
-        this.Port = port;
-        this.CreateDate = DateTimeOffset.UtcNow;
+        Name = name;
+        Ip = ip;
+        Port = port;
+        CreateDate = DateTimeOffset.UtcNow;
     }
 }
