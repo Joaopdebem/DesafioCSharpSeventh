@@ -30,12 +30,6 @@ namespace DesafioCSharpSeventh.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -58,14 +52,12 @@ namespace DesafioCSharpSeventh.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid>("MediaFileId")
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("ServerId")
                         .HasColumnType("TEXT");

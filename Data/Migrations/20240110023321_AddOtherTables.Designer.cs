@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DesafioCSharpSeventh.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240106161657_AddTableVideos")]
-    partial class AddTableVideos
+    [Migration("20240110023321_AddOtherTables")]
+    partial class AddOtherTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,16 +26,19 @@ namespace DesafioCSharpSeventh.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("IPAddress")
-                        .IsRequired()
+                    b.Property<DateTimeOffset>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("IPPort")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Ip")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Port")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -48,16 +51,22 @@ namespace DesafioCSharpSeventh.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<byte[]>("BinaryContent")
-                        .IsRequired()
-                        .HasColumnType("BLOB");
+                    b.Property<DateTimeOffset>("CreateDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsConcurrencyToken()
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("MediaFileId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("ServerId")
                         .HasColumnType("TEXT");
+
+                    b.Property<long>("SizeInBytes")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -68,11 +77,13 @@ namespace DesafioCSharpSeventh.Migrations
 
             modelBuilder.Entity("DesafioCSharpSeventh.Models.Video", b =>
                 {
-                    b.HasOne("DesafioCSharpSeventh.Models.Server", null)
+                    b.HasOne("DesafioCSharpSeventh.Models.Server", "Server")
                         .WithMany("Videos")
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Server");
                 });
 
             modelBuilder.Entity("DesafioCSharpSeventh.Models.Server", b =>

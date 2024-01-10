@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DesafioCSharpSeventh")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+396e4d79db6c9f6fd29e713ecd46f7c68b014670")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("DesafioCSharpSeventh")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DesafioCSharpSeventh")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,6 +1,3 @@
-﻿using System.Buffers.Text;
+﻿namespace DesafioCSharpSeventh.Utilities;
 
-namespace DesafioCSharpSeventh.Utilities
-{
-    public record AddVideoRequest(string Description);
-}
+public record AddVideoRequest(string Description, string VideoBase64);

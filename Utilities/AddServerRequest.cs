@@ -1,7 +1,4 @@
-﻿using DesafioCSharpSeventh.Models;
+﻿namespace DesafioCSharpSeventh.Utilities;
 
-namespace DesafioCSharpSeventh.Utilities
-{
-    public record AddServerRequest(string Name, string Ip, int Port);
-    
-}
+public record AddServerRequest(string Name, string Ip, int Port);
+

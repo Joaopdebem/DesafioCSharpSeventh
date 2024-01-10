@@ -1,20 +1,24 @@
 ﻿using DesafioCSharpSeventh.Data;
 using DesafioCSharpSeventh.Models;
 using DesafioCSharpSeventh.Models.Projections;
+using DesafioCSharpSeventh.Services.Files;
 using DesafioCSharpSeventh.Utilities;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
-using System;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DesafioCSharpSeventh.Services;
 
 public class VideoService : IVideoService
 {
     private readonly AppDbContext _context;
+    private readonly IFileService _fileService;
+    private bool _isRunning = false;
 
-    public VideoService(AppDbContext context)
+    public VideoService(AppDbContext context, IFileService fileService)
     {
         _context = context;
+        _fileService = fileService;
     }
 
 
@@ -25,12 +29,13 @@ public class VideoService : IVideoService
 
         if (server != null)
         {
-            var newVideo = new Video(request.Description);
+            var mediaFile = await _fileService.SaveFileAsync(request.VideoBase64);
+            var newVideo = new Video(request.Description, mediaFile.Id);
+
             server.Videos.Add(newVideo);
             await _context.SaveChangesAsync();
         }
     }
-
 
 
     public async Task<IEnumerable<VideoProjection>> GetVideosAsync(Guid serverId)
@@ -57,6 +62,25 @@ public class VideoService : IVideoService
     }
 
 
+    public async Task<string> GetVideoBinaryBase64Async(Guid serverId, Guid videoId)
+    {
+        var video = await _context.Videos.FindAsync(videoId);
+
+        if (video != null)
+        {
+            var fileName = $"{video.MediaFileId}.bin";
+            var bytes = await _fileService.GetBinaryAsync(fileName);
+
+            if (bytes != null && bytes.Length > 0)
+            {
+                return Convert.ToBase64String(bytes);
+            }
+        }
+
+        return null;
+    }
+
+
     public async Task UpdateVideoAsync(Guid videoId, UpdateVideoRequest request)
     {
         var existingVideo = await _context.Videos.FindAsync(videoId);
@@ -76,8 +100,58 @@ public class VideoService : IVideoService
         if (videoToDelete != null)
         {
             _context.Videos.Remove(videoToDelete);
+
+            var fileName = $"{videoToDelete.MediaFileId}.bin";
+            _fileService.RemoveFile(fileName);
+
             await _context.SaveChangesAsync();
         }
     }
+
+
+    public async Task StartRecyclingAsync(int days)
+    {
+        if (_isRunning)
+        {
+            throw new InvalidOperationException("O processo de reciclagem já está em execução.");
+        }
+
+        await Task.Run(async () =>
+        {
+            _isRunning = true;
+
+            try
+            {
+                var referenceDate = DateTime.UtcNow.AddDays(-days);
+
+                var videosToRecycle = _context.Videos
+                    .Include(v => v.Server)
+                    .AsEnumerable()
+                    .Where(v => v.CreateDate <= referenceDate)
+                    .ToList();
+
+                foreach (var video in videosToRecycle)
+                {
+                    _context.Videos.Remove(video);
+
+                    var fileName = $"{video.MediaFileId}.bin";
+                    _fileService.RemoveFile(fileName);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            finally
+            {
+                _isRunning = false;
+            }
+        });
+    }
+
+
+    public Task<string> GetRecyclingStatusAsync()
+    {
+        return Task.FromResult(_isRunning ? "running" : "not running");
+    }
+
 
 }

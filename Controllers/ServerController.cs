@@ -1,8 +1,6 @@
-﻿using DesafioCSharpSeventh.Models;
-using DesafioCSharpSeventh.Services;
+﻿using DesafioCSharpSeventh.Services;
 using DesafioCSharpSeventh.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
 

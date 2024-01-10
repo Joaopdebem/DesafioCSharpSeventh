@@ -1,5 +1,4 @@
-﻿using DesafioCSharpSeventh.Models;
-using DesafioCSharpSeventh.Services;
+﻿using DesafioCSharpSeventh.Services;
 using DesafioCSharpSeventh.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -22,7 +21,6 @@ public class VideoController : Controller
     [SwaggerOperation(Summary = "Adicionar um vídeo a um servidor", Description = "Endpoint para adicionar um vídeo a um servidor")]
     public async Task<IActionResult> AddVideo(Guid serverId, [FromBody] AddVideoRequest request)
     {
-        Console.WriteLine("Chegou ate aqui");
         await _videoService.AddVideoAsync(serverId, request);
         return StatusCode(201, new
         {
@@ -67,7 +65,28 @@ public class VideoController : Controller
 
         return Ok(video);
     }
-    
+
+
+    [HttpGet("servers/{serverId}/videos/{videoId}/binary")]
+    [SwaggerOperation(Summary = "Recuperar dados de um vídeo", Description = "Endpoint para recuperar dados cadastrais de um video em um servidor")]
+    public async Task<IActionResult> GetVideoBinaryBase64(Guid serverId, Guid videoId)
+    {
+        var binaryBase64 = await _videoService.GetVideoBinaryBase64Async(serverId, videoId);
+
+        if (binaryBase64 == null)
+        {
+            return NotFound(new
+            {
+                Message = "Vídeo não encontrado ou arquivo binário não disponível."
+            });
+        }
+
+        return Ok(new
+        {
+            BinaryBase64 = binaryBase64
+        });
+    }
+
 
     [HttpGet("servers/{serverId}/videos")]
     [SwaggerOperation(Summary = "Listar todos vídeos de um servidor", Description = "Endpoint para listar todos os videos de um servidor")]
@@ -107,5 +126,24 @@ public class VideoController : Controller
         return Ok();
     }
 
+
+    [HttpPost("recycler/process/{days}")]
+    [SwaggerOperation(Summary = "Reciclar vídeos", Description = "Endpoint para reciclar videos.")]
+    public async Task<IActionResult> StartRecycling(int days)
+    {
+        await _videoService.StartRecyclingAsync(days);
+
+        return Accepted();
+    }
+
+
+    [HttpGet("recycler/status")]
+    [SwaggerOperation(Summary = "Verificar status da reciclagem", Description = "Endpoint para acompanhar se está em execução a reciclagem de vídeos.")]
+    public async Task<IActionResult> GetRecyclingStatus()
+    {
+        var status = await _videoService.GetRecyclingStatusAsync();
+
+        return Ok(new { status });
+    }
 
 }

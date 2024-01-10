@@ -4,7 +4,6 @@ using DesafioCSharpSeventh.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Sockets;
 using System.Net;
-using Microsoft.AspNetCore.Hosting.Server;
 using DesafioCSharpSeventh.Models.Projections;
 
 namespace DesafioCSharpSeventh.Services;
@@ -13,7 +12,7 @@ public class ServerService : IServerService
 {
     private readonly AppDbContext _context;
 
-    
+
     public ServerService(AppDbContext context)
     {
         _context = context;
